@@ -7,6 +7,7 @@ export function useApi(){
     async function getValueFor(key) {
         let result = await SecureStore.getItemAsync(key);
         if (result) {
+
           return result;
         } else {
           return "nook";
@@ -75,6 +76,6 @@ export function useApi(){
         }
     }
 
-    return { listAll, addTask, login };
+    return { listAll, addTask, login, save, getValueFor };
 
 }

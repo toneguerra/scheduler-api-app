@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
-import { FlatList, Text, View } from "react-native";
+import { Button, FlatList, Text, View } from "react-native";
 import {useApi} from '@/hook/useApi'
+import { useSession } from "@/hook/useSession";
 
 export default function Tasks(){
     const [tasks, setTasks] = useState([]);
 
     const api  = useApi();
+    const session=useSession();
+
+    const [vlrSession, setVlrSession] = useState<string>()
+
 
     async function getTasks(){
         const tasks =  await api.listAll();
@@ -14,15 +19,34 @@ export default function Tasks(){
         setTasks(tasks);
     }
 
+    async function salvarDados(dados:string){
+        console.log("LOGANDO")
+        await session.saveLogin(dados);
+        receberDados();
+    }
+
+    async function receberDados(){
+        const x = await session.getValueFor('teste')
+        .then(data => {
+            console.log(data)
+            
+            setVlrSession(data?.toString())
+        });
+    }
+
 
     useEffect(()=>{
         getTasks();
-    }, []);
+        receberDados();
+    }, [vlrSession]);
 
 
     return(
         <View>
-            <Text>Listando Tarefas</Text>
+            <Text>Listando Tarefass</Text>
+            <Button title="TROCAR DADOS DA SESSÃO" onPress={()=>salvarDados("Alex Guerra")}/>
+
+            <Text>{vlrSession}</Text>
 
             <FlatList
                 //className="bg-indigo-950 w-full p-2"
